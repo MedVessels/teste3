@@ -86,6 +86,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="js/nouislider.js"></script>
   <script src="js/wNumb.js"></script>
+  <script src="js/mergeTooltip.js"></script>
 
 
 
@@ -173,31 +174,42 @@
         var addportos = L.geoJson(portos).addTo(map)
         var addfretes = L.geoJson(fretes)
 
-        var slider = document.getElementById('slider');
-        noUiSlider.create(slider,{
-          start: [1420,1430],
-          connect: true,
-          tooltips: true,
-          format: wNumb({
-           decimals: 0
-          }),
-          range: {
-            'min': 1400,
-            'max': 1500,
-            
-          }
-          }).on('slide', function(e){
-          console.log(e)
-
-          addfretes.eachLayer(function(layer){
-          if(layer.feature.properties.Ano>=(e[0])&&layer.feature.properties.Ano<=(e[1])){
-            layer.addTo(map);
-          }else {
-            map.removeLayer(layer);
-          }
-      });
-
+        // Função para filtrar e exibir os dados do geojson no mapa
+  function filtrarDados(e) {
+    addfretes.eachLayer(function (layer) {
+      if (layer.feature.properties.Ano >= e[0] && layer.feature.properties.Ano <= e[1]) {
+        if (!map.hasLayer(layer)) {
+          layer.addTo(map);
+        }
+      } else {
+        map.removeLayer(layer);
+      }
     });
+  }
+
+  // Criação do slider
+  var slider = document.getElementById('slider');
+  noUiSlider.create(slider, {
+    start: [1469, 1484],
+    connect: true,
+    tooltips: true,
+    step: 1,
+    format: wNumb({
+      decimals: 0
+    }),
+    range: {
+      'min': 1400,
+      'max': 1500,
+    }
+  }).on('slide', function (e) {
+    filtrarDados(e); // Chama a função para filtrar os dados quando o slider é movido
+  });
+
+  // Filtra e exibe os dados inicialmente ao carregar a página
+  var initialRange = slider.noUiSlider.get(); // Obtém o valor inicial do slider
+  filtrarDados(initialRange);
+
+  mergeTooltips(slider, 15, ' - ');
 
 
         
