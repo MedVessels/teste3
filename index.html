@@ -141,10 +141,7 @@
             }
         }).addTo(map);
 
-        // Estabelecer um zoom de acordo com o geojson
-        map.fitBounds(labelling.getBounds(),{
-          padding: [-41,1]//confirmar estes valores, podemos ter de alterar o geojson labelling pelo geojson dos portos que ainda não está adicionado
-        });
+        
 
         // Adicionar a camada StreetLabels ao mapa (apenas para 'labels')
         map.addLayer(streetLabelsRenderer);
@@ -173,6 +170,11 @@
         // Adicionar a camada dos Portos
         var addportos = L.geoJson(portos).addTo(map)
         var addfretes = L.geoJson(fretes)
+
+        // Estabelecer um zoom de acordo com o geojson
+        map.fitBounds(addfretes.getBounds(),{
+          padding: [-41,1]//confirmar estes valores, podemos ter de alterar o geojson labelling pelo geojson dos portos que ainda não está adicionado
+        });
 
         // Função para filtrar e exibir os dados do geojson no mapa
   function filtrarDados(e) {
